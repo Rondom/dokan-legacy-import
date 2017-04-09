@@ -1,0 +1,21 @@
+Repo-Conversion: Legacy-Dokan-SVN to Dokany-GIT
+
+The conversion of the SVN-history was done using reposurgeon. The code
+used for this conversion can be found at:
+<URL>
+
+This commit serves as a "connection" between the old SVN-history and the
+newer Dokany history. Using "git replace" it replaces the initial commit
+192b852ed1ac58 ("Add original Dokan project source files"). This has the
+advantage that no history needs to be rewritten.
+
+Git enables transparent use of the history, acting as if there was one
+continuous history. For instance git log and also git blame -w work as
+usual, which is useful when determining where a specific line came from.
+
+The diff looks very big, but in fact it is mostly whitespace changes.
+Dokany uses Unix linebreaks, while legacy Dokan used DOS linebreaks.
+Using diff -w one can see that there are in fact only changes to
+.gitignore files. In order to preserve the history as accurately as
+possible, it was decided against converting the line-endings as part of
+the repository conversion.

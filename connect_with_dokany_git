@@ -1,0 +1,30 @@
+#!/bin/bash
+set -eu
+tags="$4"
+replace_ref="$3"
+DOKANY_GIT_URL=$2
+
+rm -rf $1-connected
+git clone $1 $1-connected
+cd $1-connected
+git remote add dokany-git "$DOKANY_GIT_URL"
+git fetch dokany-git
+git checkout $replace_ref
+git symbolic-ref HEAD refs/heads/master
+git commit -F ../connecting-commit.commitmsg
+git replace $replace_ref master
+git reset --hard dokany-git/master
+
+function create_tag {
+    new_tag="v$1"
+    svn_tag="dokan-$1"
+    echo TAG $new_tag => $svn_tag
+    git tag --a --force -m "Dokan SVN $svn_tag" $new_tag $svn_tag
+}
+
+echo Creating tags...
+for tag in $tags; do
+    create_tag "$tag"
+done
+
+echo Done

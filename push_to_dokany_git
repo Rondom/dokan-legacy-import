@@ -1,0 +1,22 @@
+#!/bin/bash
+set -eu
+tags="$3"
+replace_ref="$2"
+cd "$1"
+
+echo Pushing replace reference
+git push --force dokany-git "refs/replace/$replace_ref"
+
+echo Pushing tags...
+
+function push_tag {
+    new_tag="v$1"
+    echo Pushing tag $new_tag
+    git push --force dokany-git $new_tag
+}
+ 
+for tag in $tags; do
+    push_tag "$tag"
+done
+
+echo Done
