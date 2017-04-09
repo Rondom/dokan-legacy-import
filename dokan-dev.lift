@@ -1,1 +1,31 @@
 # Lift commands for dokan-dev
+echo 1
+
+# Remove committed binaries from Dokan SSHFS and its dependencies
+expunge //Release/.+/
+expunge //Debug/.+/
+
+# SVN r1 "Initial directory structure." is an empty commit probably created
+# by Google Code on repository creation. Squash it into the next commit
+<1> squash --pushforward --complain
+
+# SVN r94 is the first commit in the "release" directory/branch that was used
+# to store binary release. Make this branch self-contained and separate from
+# master with no common ancestor.
+<94> reparent
+
+# Squash r175 ("add tag dokan-0.6.0") into previous commit to prevent
+# extraneous commit with .gitignore change.
+# Also move the tag back to the previous commit
+<175> squash --pushback --tagback --complain
+
+# The tag dokan-sshfs-0.6.0 (svn commit r181 "add Dokan SSHFS 0.6.0")contains
+# only dokan-sshfs without anything else. Other revisions contain exactly the
+# same source, but in a subdirectory dokan_sshfs.
+# git diff -D -M100% dokan-sshfs-0.6.0^ dokan-sshfs-0.6.0 shows only the renames due to the
+# directory change and the deletes of all the other files.
+# Therefore we discard the contents of this commit and move the tag to the
+# previous commit.
+<dokan-sshfs-0.6.0> squash --delete --tagback --complain
+
+# Connection to Dokany-Git is done using git
