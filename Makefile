@@ -28,12 +28,6 @@
 #
 
 EXTRAS = 
-REMOTE_URL = svn://svn.debian.org/dokan-dev
-#REMOTE_URL = https://dokan-dev.googlecode.com/svn/
-CVS_HOST = dokan-dev.cvs.sourceforge.net
-#CVS_HOST = cvs.savannah.gnu.org
-CVS_MODULE = dokan-dev
-#REMOTE_URL = cvs://$(CVS_HOST)/dokan-dev\#$(CVS_MODULE)
 READ_OPTIONS =
 VERBOSITY = "verbose 1"
 REPOSURGEON = reposurgeon
@@ -55,13 +49,15 @@ dokan-dev-git: dokan-dev.fi
 dokan-dev.fi: dokan-dev.svn dokan-dev.opts dokan-dev.lift dokan-dev.map $(EXTRAS)
 	$(REPOSURGEON) $(VERBOSITY) "script dokan-dev.opts" "read $(READ_OPTIONS) <dokan-dev.svn" "authors read <dokan-dev.map" "sourcetype svn" "prefer git" "script dokan-dev.lift" "legacy write >dokan-dev.fo" "write >dokan-dev.fi"
 
-# Build the first-stage stream dump from the local mirror
-dokan-dev.svn: dokan-dev-mirror
-	(cd dokan-dev-mirror/ >/dev/null; repotool export) >dokan-dev.svn
+# Google Code Archive already provides a gzipped dump, so we download it
+dokan-dev.svn:
+	wget https://storage.googleapis.com/google-code-archive-source/v2/code.google.com/dokan/repo.svndump.gz -O - | zcat > dokan-dev.svn
 
-# Build a local mirror of the remote repository
-dokan-dev-mirror:
-	repotool mirror $(REMOTE_URL) dokan-dev-mirror
+# Instead of using repotool mirror, we simply import the dump we downloaded
+dokan-dev-mirror: dokan-dev.svn
+	rm -fr dokan-dev-mirror
+	svnadmin create dokan-dev-mirror
+	svnadmin load dokan-dev-mirror < dokan-dev.svn
 
 # Make a local checkout of the source mirror for inspection
 dokan-dev-checkout: dokan-dev-mirror
