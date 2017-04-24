@@ -31,7 +31,6 @@ EXTRAS =
 READ_OPTIONS =
 DOKANY_GIT_URL=git@github.com:Rondom/dokany.git
 DOKANY_GIT_REPLACE_COMMIT=192b852ed1ac58c448a884311f1ab8b671411e26
-DOKANY_TAGS_TO_MIGRATE=0.3.7.1181 0.3.9.1191 0.4.0.1223 0.4.1.1236 0.5.0 0.5.1 0.5.2 0.5.3 0.6.0
 VERBOSITY = "verbose 1"
 REPOSURGEON = reposurgeon
 
@@ -47,10 +46,10 @@ default: dokan-dev-git
 connect_with_dokany_git: dokan-dev-git-connected
 
 %-connected: dokan-dev-git
-	./connect_with_dokany_git $* $(DOKANY_GIT_URL) $(DOKANY_GIT_REPLACE_COMMIT) "$(DOKANY_TAGS_TO_MIGRATE)"
+	./connect_with_dokany_git $* $(DOKANY_GIT_URL) $(DOKANY_GIT_REPLACE_COMMIT)
 
 push_to_dokany_git: dokan-dev-git-connected
-	./push_to_dokany_git dokan-dev-git-connected $(DOKANY_GIT_REPLACE_COMMIT) "$(DOKANY_TAGS_TO_MIGRATE)"
+	./push_to_dokany_git dokan-dev-git-connected $(DOKANY_GIT_REPLACE_COMMIT)
 
 # Build the converted repo from the second-stage fast-import stream
 dokan-dev-git: dokan-dev.fi
